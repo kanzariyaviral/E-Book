@@ -12,18 +12,20 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       content: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       isPublished: {
         field: "is_published",
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
         allowNull: false,
       },
       publishedDate: {
         field: "published_date",
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: null,
       },
       publisherId: {
         field: "publisher_id",

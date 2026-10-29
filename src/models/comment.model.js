@@ -11,6 +11,15 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      rating: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 5,
+        validate: {
+          min: 1,
+          max: 5,
+        },
+      },
       commenterId: {
         field: "commenter_id",
         type: Sequelize.INTEGER,

@@ -1,17 +1,7 @@
-// routes/sample.js
-/**
- * @swagger
- * /sample:
- *   get:
- *     summary: Returns a sample message
- *     responses:
- *       200:
- *         description: A successful response
- */
 const express = require('express');
 const app = express();
 require('dotenv').config();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 require('./src/config/database.config');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -22,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 // Swagger setup
 const swaggerOptions = {
   definition: {
-    myapi: '3.0.0',
+    openapi: '3.0.0',
     info: {
       title: 'My API',
       version: '1.0.0',
@@ -30,19 +20,33 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: `http://localhost:${port}`,
+        description: 'Development server',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },
-  apis: ['./src/routes/*.js'], // files containing annotations as above
+  apis: ['./src/routes/*.js'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-//Swagger setup End
+// Swagger setup End
 
-
-//routes
+// routes
 app.use('/api/auth', require('./src/routes/auth.route'));
 app.use('/api/books', require('./src/routes/book.route'));
 app.use('/api/categories', require('./src/routes/category.route'));
@@ -52,8 +56,8 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+module.exports = app;

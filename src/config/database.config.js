@@ -15,6 +15,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: "postgres",
     port: process.env.DB_PORT,
+    logging: false,
   },
 );
 
@@ -68,17 +69,19 @@ sequelize.bookReaders.belongsTo(sequelize.users, {
 });
 
 try {
-    // Test the database connection
-    sequelize.authenticate();
+  // Test the database connection
+  sequelize.authenticate().then(() => {
     console.log("Connection has been established successfully.");
-    sequelize.sync({ force: false }).then(() => {
-        console.log("Database & tables created!");
-    });
-    sequelize.sync({ alter: true }).then(() => {
-        console.log("Database & tables altered!");
-    });
+  }).catch((error) => {
+    console.error("Unable to connect to the database:", error);
+  });
+  sequelize.sync({ force: false }).then(() => {
+    console.log("Database & tables created!");
+  }).catch((error) => {
+    console.error("Error syncing tables:", error.message);
+  });
 } catch (error) {
-    // Handle the error
+  // Handle the error
   console.error("Unable to connect to the database:", error);
 }
 
